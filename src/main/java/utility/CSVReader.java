@@ -22,12 +22,15 @@ import model.TransactionType;
 
 public class CSVReader {
 
-	public List<Transaction> readCSV() throws RelativeAccountBalanceCalculatorException {
+	public List<Transaction> readCSV(String path) throws RelativeAccountBalanceCalculatorException {
 		List<Transaction> transactionList = null;
 		InputStreamReader input;
 		try {
-			input = new InputStreamReader(
-					new FileInputStream(new File(this.getClass().getResource("/input.csv").getPath())));
+			System.out.println("File location received as:"+path);
+			File file = new File(path);
+			input = new InputStreamReader(new FileInputStream(file));
+		
+			
 			CSVParser csvParser = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(input);
 			transactionList = new ArrayList<Transaction>();
 			for (CSVRecord record : csvParser) {
@@ -46,6 +49,7 @@ public class CSVReader {
 				transactionList.add(transaction);
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new RelativeAccountBalanceCalculatorException("Error while getting input file ", e);
 		} catch (ParseException e) {
 			throw new RelativeAccountBalanceCalculatorException("Error while doing date conversion ", e);

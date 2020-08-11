@@ -24,12 +24,14 @@ public class RelativeAccountBalanceCalculator {
 		RelativeAccountBalanceCalculator relativeAccountBalanceCalculator = new RelativeAccountBalanceCalculator();
 		CSVReader csvReader = new CSVReader();
 		Scanner in = new Scanner(System.in);
+		System.out.print("Please enter input file location");
+		String inputFileLocation = in.nextLine();
+		System.out.println("Please enter account number ");
 		String accountNumber = in.nextLine();
-		System.out.println("Account Number entered is " + accountNumber);
+		System.out.println("Please enter start date and time");
 		String fromDuration = in.nextLine();
-		System.out.println("Starting from : " + fromDuration);
+		System.out.println("Please enter end date and time");
 		String toDuration = in.nextLine();
-		System.out.println("Ending to : " + toDuration);
 
 		InputCriteria inputCritea = new InputCriteria();
 		inputCritea.setAccountId(accountNumber);
@@ -37,15 +39,18 @@ public class RelativeAccountBalanceCalculator {
 			inputCritea.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse(fromDuration));
 			inputCritea.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse(toDuration));
 			Output balance = relativeAccountBalanceCalculator.calculateRelativeBalance(inputCritea,
-					csvReader.readCSV());
+					csvReader.readCSV(inputFileLocation));
 			System.out.println("Relative balance for the period is : " + balance.getRelativeAmount());
 			System.out.println("Number of transactions included is : " + balance.getCount());
 		} catch (ParseException parseException) {
+			parseException.printStackTrace();
 			throw new RelativeAccountBalanceCalculatorException("Error while date parsing :", parseException);
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new RelativeAccountBalanceCalculatorException("Invalid date provided:", e);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RelativeAccountBalanceCalculatorException(e.getMessage());
 		} finally {
 			in.close();
@@ -57,14 +62,15 @@ public class RelativeAccountBalanceCalculator {
 				.collect(Collectors.groupingBy(Transaction::getFromAccountId));
 
 		if (groupedMap.containsKey(inputCriteria.getAccountId())) {
-			//List contains all account detail
+			// List contains all account detail
 			List<Transaction> filteredList = groupedMap.get(inputCriteria.getAccountId());
 
-			//Map consist of Key - Transaction Id and list of all accounts
+			// Map consist of Key - Transaction Id and list of all accounts
 			Map<String, List<Transaction>> filterdMap = groupedMap.get(inputCriteria.getAccountId()).stream()
 					.collect(Collectors.groupingBy(Transaction::getTransactionId));
 
-			//Map consist of Key - Transaction Id of reversal transaction and list of accounts 
+			// Map consist of Key - Transaction Id of reversal transaction and
+			// list of accounts
 			Map<String, List<Transaction>> reversalList = filteredList.stream()
 					.filter(predicate -> TransactionType.REVERSAL.equals(predicate.getTransactionType()))
 					.collect(Collectors.groupingBy(Transaction::getRelatedTransaction));
@@ -78,7 +84,8 @@ public class RelativeAccountBalanceCalculator {
 				});
 				return returnOutPut(finalList, inputCriteria);
 			} else {
-				//Condition will work when no reversal is passed and will give output
+				// Condition will work when no reversal is passed and will give
+				// output
 				return returnOutPut(filteredList, inputCriteria);
 			}
 		} else {

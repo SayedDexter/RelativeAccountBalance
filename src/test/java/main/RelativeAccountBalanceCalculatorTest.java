@@ -16,11 +16,13 @@ public class RelativeAccountBalanceCalculatorTest {
 
 	private RelativeAccountBalanceCalculator relativeAccountBalanceCalculator;
 	private CSVReader csvReader;
+	private String path;
 	
 	@Before
 	public void setUp() {
 		relativeAccountBalanceCalculator = new RelativeAccountBalanceCalculator();
 		csvReader = new CSVReader();
+		path = this.getClass().getResource("/input.csv").getPath();
 	}
 
 	@Test
@@ -30,8 +32,8 @@ public class RelativeAccountBalanceCalculatorTest {
 		inputCriteria.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 12:00:00"));
 		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 19:00:00"));
 		BigDecimal result = new BigDecimal(-25);
-		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getRelativeAmount());
-		Assert.assertEquals(1, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getCount());
+		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getRelativeAmount());
+		Assert.assertEquals(1, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getCount());
 	}
 	
 	@Test(expected=RelativeAccountBalanceCalculatorException.class)
@@ -40,7 +42,7 @@ public class RelativeAccountBalanceCalculatorTest {
 		inputCriteria.setAccountId("ACC3344551");
 		inputCriteria.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 12:00:00"));
 		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 19:00:00"));
-		relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV());
+		relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path));
 	}
 	
 	@Test
@@ -50,8 +52,8 @@ public class RelativeAccountBalanceCalculatorTest {
 		BigDecimal result = new BigDecimal(-5);
 		inputCriteria.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 12:00:00"));
 		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 19:00:00"));
-		Assert.assertEquals(1, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getCount());
-		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getRelativeAmount());
+		Assert.assertEquals(1, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getCount());
+		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getRelativeAmount());
 	}
 	
 	@Test
@@ -61,8 +63,8 @@ public class RelativeAccountBalanceCalculatorTest {
 		BigDecimal result = new BigDecimal(0);
 		inputCriteria.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("21/10/2018 12:00:00"));
 		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("21/1/2018 19:00:00"));
-		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getRelativeAmount());
-		Assert.assertEquals(0, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV()).getCount());
+		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getRelativeAmount());
+		Assert.assertEquals(0, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getCount());
 	}
 	
 }

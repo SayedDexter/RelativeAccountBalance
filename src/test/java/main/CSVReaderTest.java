@@ -20,7 +20,7 @@ public class CSVReaderTest {
 
 	@Test
 	public void testCSVFileRead() throws Exception {
-		List<Transaction> listOfTransaction = csvReader.readCSV();
+		List<Transaction> listOfTransaction = csvReader.readCSV(this.getClass().getResource("/input.csv").getPath());
 		Assert.assertEquals(5, listOfTransaction.size());
 	}
 
