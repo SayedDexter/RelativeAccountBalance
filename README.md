@@ -46,8 +46,8 @@ Please enter start date and time
 
 Assumption :
 
-We will always have formatted file and account will be used is fromAccountId only.
-
+1) We will always have formatted file and account will be used is fromAccountId only.
+2) One transaction will have only one Reversal with same amount
 
 Running build 
 mvn clean install
