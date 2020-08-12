@@ -5,9 +5,11 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import constant.Constant;
@@ -68,16 +70,18 @@ public class RelativeAccountBalanceCalculator {
 			// Map consist of Key - Transaction Id and list of all accounts
 			Map<String, List<Transaction>> filterdMap = groupedMap.get(inputCriteria.getAccountId()).stream()
 					.collect(Collectors.groupingBy(Transaction::getTransactionId));
-
-			// Map consist of Key - Transaction Id of reversal transaction and
-			// list of accounts
-			Map<String, List<Transaction>> reversalList = filteredList.stream()
-					.filter(predicate -> TransactionType.REVERSAL.equals(predicate.getTransactionType()))
-					.collect(Collectors.groupingBy(Transaction::getRelatedTransaction));
-
-			if (!reversalList.isEmpty()) {
+			
+			Set<String> transaction = new HashSet<>();
+			for(Transaction tra : filteredList){
+				if(TransactionType.REVERSAL.equals(tra.getTransactionType())){
+					transaction.add(tra.getRelatedTransaction());
+					transaction.add(tra.getTransactionId());
+				}
+			}
+					
+			if (!filterdMap.isEmpty()) {
 				// transactionId,List<transaction>
-				filterdMap.entrySet().removeIf(predicate -> reversalList.containsKey(predicate.getKey()));
+				filterdMap.entrySet().removeIf(predicate -> transaction.contains(predicate.getKey()));
 				List<Transaction> finalList = new ArrayList<>();
 				filterdMap.values().forEach(e -> {
 					finalList.add(e.get(0));

@@ -30,7 +30,7 @@ public class RelativeAccountBalanceCalculatorTest {
 		InputCriteria inputCriteria = new InputCriteria();
 		inputCriteria.setAccountId("ACC334455");
 		inputCriteria.setFromStartingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 12:00:00"));
-		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 19:00:00"));
+		inputCriteria.setToEndingDate(new SimpleDateFormat(Constant.DATE_FORMAT).parse("20/10/2018 20:00:00"));
 		BigDecimal result = new BigDecimal(-25);
 		Assert.assertEquals(result, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getRelativeAmount());
 		Assert.assertEquals(1, relativeAccountBalanceCalculator.calculateRelativeBalance(inputCriteria, csvReader.readCSV(path)).getCount());
